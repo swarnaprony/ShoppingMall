@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from "react";
 import Footer from "./Footer";
 import Header from "./Header";
+import Login from "./Login";
+import Register from "./Register"
 
 function App() {
 
@@ -12,7 +14,7 @@ function App() {
 
     //GET Method
     useEffect(() => {
-        fetch("http://localhost:4000")
+        fetch("http://localhost:4000/login")
         .then(res => res.json()
         .then(data => {
             setUsers(data)
@@ -25,7 +27,7 @@ function App() {
 
     //Post Method
     const addUsers = async(newUser) => {
-        await fetch("http://localhost:4000", {
+        await fetch("http://localhost:4000/login", {
             method: "POST",
             body: JSON.stringify({
                 username: newUser.username,
@@ -70,12 +72,8 @@ function App() {
     return (
         <div>
             <Header />
-            <form className="form">
-                <input type="text" name="username" onChange={handleChange} value={users.username} placeholder="Username" />
-                <input type="email" name="email" onChange={handleChange} value={users.email} placeholder="E-Mail" />
-                <input type="password" name="password" onChange={handleChange} value={users.password} placeholder="Password" />
-                <button type="submit" onClick={handleSubmit}>Submit</button>
-            </form>
+            <Login />
+            <Register />            
             <Footer />
         </div>
     )

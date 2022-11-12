@@ -2,12 +2,11 @@ import React from "react";
 
 function Login() {
     return (
-        <form className="form">
-            <input type="text" placeholder="Username" />
-            <input type="email" placeholder="E-Mail" />
-            <input type="password" placeholder="Password" />
-            <button type="submit">Submit</button>
-        </form>
+        <div>
+            <button onClick={event =>  window.location.href='/login'}>
+                Login
+            </button>
+        </div>
     )
 }
 

@@ -53,8 +53,16 @@ app.post('/', function(req, res){
     });
 });
 
+app.get('/login', function(req, res){
+    console.log("Login called")
+    User.find(function(err, foundUsers){
+        if (!err) {
+            res.send(foundUsers);
+        } else {
+            res.send(err);
+        }
+    })
+})
 app.listen(4000, function(){
     console.log("Server Started on Port 4000");
 });  
-
-  
