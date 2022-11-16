@@ -34,7 +34,7 @@ app.get('/', function(req, res){
     })
 })
 
-app.post('/', function(req, res){
+app.post('/users', function(req, res){
 
     console.log(req.body)
 
@@ -63,6 +63,18 @@ app.get('/login', function(req, res){
         }
     })
 })
+
+app.get('/users', function(req, res) {
+  console.log("Users called")
+    User.find(function(err, foundUsers){
+        if (!err) {
+            res.send(foundUsers);
+        } else {
+            res.send(err);
+        }
+    })
+})
+
 app.listen(4000, function(){
     console.log("Server Started on Port 4000");
-});  
+  });  
