@@ -5,7 +5,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Header from "../Header";
 import Home from "../Home";
 
-function Register() {
+function Register(
+) {
 
     // Creating newUser in Backend
     const addUsers = async (newUser) => {
@@ -42,10 +43,7 @@ function Register() {
                 ...prevValue, [name]: value
             }
         });
-    };
-
-
-    
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -53,7 +51,6 @@ function Register() {
         window.location = "/"
 
     }
-
     return (
         <div>
             <div class="container h-100 position-relative">
