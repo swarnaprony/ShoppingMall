@@ -62,8 +62,6 @@ con.promise().query(selectUsers).then( ([rows,fields]) => {
 
 
 app.post('/users', function(req, res){
-    console.log("Create new user:" + req.body);
-    console.log(req.body.password, req.body.confirmPassword)
 
     var user = createUser(req.body);
     console.log(JSON.stringify(user));
@@ -72,8 +70,9 @@ app.post('/users', function(req, res){
 
     if (validationResult.valid == true) {
       saveUser(user);
+      res.send(user);
     } else {
-      console.log("User invalid")
+      console.log(validationResult)
       res.status(400);
       res.send(validationResult);
     }
@@ -100,39 +99,30 @@ app.listen(4000, function(){
     console.log(user.username)
     const validate = {
       "valid": true,
-      "error": [
-      ]
+      "errors": {}
     }
 
     if (user.username == "" || user.username == null) {
       validate.valid = false
-      validate.error.push({
-        field: "username", 
-        errorMessage: "Username field cannot be empty or null"
-      })
+      validate.errors["username"] = "Username field cannot be empty or null" 
     }
+
     if (user.email == null || user.email == "") {
       validate.valid = false
-      validate.error.push({
-        field: "email", 
-        errorMessage: "Email field cannot be empty or null"
-      })
+      validate.errors["email"] = "Email field cannot be empty or null"
     }
+
     if (user.password == null || user.password == "") {
       validate.valid = false
-      validate.error.push({
-        field: "password", 
-        errorMessage: "Password field cannot be empty"
-      })
+      validate.errors["password"] = "Password field cannot be empty"
     }
+
     if (user.password != user.confirmPassword || user.confirmPassword == "" || user.confirmPassword == null) {
       console.log("Check password")
       validate.valid = false
-      validate.error.push({
-        field: "confirmPassword", 
-        errorMessage: "Password mismatched"
-      })
+      validate.errors["confirmPassword"] = "Password mismatched"
     }
+    
     return validate
   }
 
