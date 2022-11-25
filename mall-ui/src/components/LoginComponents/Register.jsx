@@ -35,6 +35,7 @@ function Register() {
 
     function handleResponse(response) {
         setErrMsgs(() => {
+            console.log(response.errors)
             return response.errors
         })
     }
