@@ -5,6 +5,7 @@ const cors = require("cors");
 const mysql = require('mysql2');
 const { check, validationResult } = require('express-validator');
 const { PromiseProvider } = require("mongoose");
+const mysqlPromise = require('mysql2/promise');
 
 
 const app = express();
@@ -53,10 +54,11 @@ app.get('/users', function (req, res) {
 
 app.get('/users/:userName', function (req, res) {
   const selectUsers = "SELECT username FROM users WHERE username = '" + req.params.userName + "'";
+  
   con.promise().query(selectUsers).then(([rows, fields]) => {
     res.send(rows)
   })
-    .catch(console.log)
+  .catch(console.log)
 })
 
 
@@ -66,16 +68,23 @@ app.post('/users', function (req, res) {
   var user = createUser(req.body);
   console.log(JSON.stringify(user));
 
-  const validationResult = validateUsers(user)
-
-  if (validationResult.valid == true) {
-    saveUser(user);
-    res.send(user);
-  } else {
-    console.log(validationResult)
-    res.status(400);
-    res.send(validationResult);
-  }
+  con.query("SELECT username FROM users WHERE username = '" + user.username + "'", function (err, result, fields) {
+    if (err) throw err;
+    console.log("Username Test")
+    console.log(result);
+    var user_found = result[0]
+    
+    var validationResult = validateUsers(user, user_found)
+    
+    if (validationResult.valid == true) {
+      saveUser(user);
+      res.send(user);
+    } else {
+      console.log(validationResult)
+      res.status(400);
+      res.send(validationResult);
+    }
+  })
 
 });
 
@@ -89,24 +98,14 @@ function createUser(prop) {
   }
 }
 
-function validateUsers(user) {
+function validateUsers(user, user_found) {
 
   const validate = {
     "valid": true,
     "errors": {}
   }
-  var user_found = []
 
-  con.query("SELECT username FROM users WHERE username = '" + user.username + "'", function (err, result, fields) {
-    if (err) throw err;
-    console.log("Username Test")
-    console.log(result);
-    user_found = result[0]
-  })
-
-  
   console.log(user_found.username)
-  console.log(user.username.toLowerCase())
 
   if (user_found.username === user.username.toLowerCase()) {
     console.log("user found called")
@@ -136,6 +135,7 @@ function validateUsers(user) {
   }
 
   return validate
+
 }
 
 
