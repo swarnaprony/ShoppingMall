@@ -54,11 +54,11 @@ app.get('/users', function (req, res) {
 
 app.get('/users/:userName', function (req, res) {
   const selectUsers = "SELECT username FROM users WHERE username = '" + req.params.userName + "'";
-  
+
   con.promise().query(selectUsers).then(([rows, fields]) => {
     res.send(rows)
   })
-  .catch(console.log)
+    .catch(console.log)
 })
 
 
@@ -68,25 +68,21 @@ app.post('/users', function (req, res) {
   var user = createUser(req.body);
   console.log(JSON.stringify(user));
 
-  con.query("SELECT username FROM users WHERE username = '" + user.username + "'", function (err, result, fields) {
-    if (err) throw err;
-    console.log("Username Test")
-    console.log(result);
-    var user_found = result[0]
-    
-    var validationResult = validateUsers(user, user_found)
-    
-    if (validationResult.valid == true) {
-      saveUser(user);
-      res.send(user);
-    } else {
-      console.log(validationResult)
-      res.status(400);
-      res.send(validationResult);
-    }
-  })
+  var validationResultPromise = validateUsers(user)
+  console.log(validationResultPromise)
 
-});
+  validationResultPromise.then((validationResult) => {
+      if (validationResult.valid == true) {
+        saveUser(user);
+        res.send(user);
+      } else {
+        console.log(validationResult)
+        res.status(400);
+        res.send(validationResult);
+      }
+    })
+    console.log("Validation result called")
+})
 
 
 function createUser(prop) {
@@ -98,43 +94,49 @@ function createUser(prop) {
   }
 }
 
-function validateUsers(user, user_found) {
+
+function validateUsers(user) {
 
   const validate = {
     "valid": true,
     "errors": {}
   }
 
-  console.log(user_found.username)
+  const findUsername = "SELECT username FROM users WHERE username = '" + user.username + "'";
+  console.log(findUsername)
+  return con.promise().query(findUsername)
+  .then((rows) => {
 
-  if (user_found.username === user.username.toLowerCase()) {
-    console.log("user found called")
-    validate.valid = false
-    validate.errors["username"] = "Username alredy exists. Give an unique username"
-  } else {
-    if (user.username == null || user.username == "") {
-      validate.valid = false
-      validate.errors["username"] = "Username field cannot be empty or null"
-    }
-  }
+      if(rows[0].length >= 1) {
+        console.log("user found called")
+        validate.valid = false
+        validate.errors["username"] = "Username alredy exists. Give an unique username"
+      } else {
+        if (user.username == null || user.username == "") {
+          validate.valid = false
+          validate.errors["username"] = "Username field cannot be empty or null"
+        }
+      }
 
-  if (user.email == null || user.email == "") {
-    validate.valid = false
-    validate.errors["email"] = "Email field cannot be empty or null"
-  }
+      if (user.email == null || user.email == "") {
+        validate.valid = false
+        validate.errors["email"] = "Email field cannot be empty or null"
+      }
 
-  if (user.password == null || user.password == "") {
-    validate.valid = false
-    validate.errors["password"] = "Password field cannot be empty"
-  }
+      if (user.password == null || user.password == "") {
+        validate.valid = false
+        validate.errors["password"] = "Password field cannot be empty"
+      }
 
-  if (user.password != user.confirmPassword || user.confirmPassword == "" || user.confirmPassword == null) {
-    console.log("Check password")
-    validate.valid = false
-    validate.errors["confirmPassword"] = "Password mismatched"
-  }
+      if (user.password != user.confirmPassword || user.confirmPassword == "" || user.confirmPassword == null) {
+        console.log("Check password")
+        validate.valid = false
+        validate.errors["confirmPassword"] = "Password mismatched"
+      }
 
-  return validate
+      return validate
+
+  })
 
 }
 
