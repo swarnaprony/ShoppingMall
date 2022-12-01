@@ -110,28 +110,28 @@ function validateUsers(user) {
       if(rows[0].length >= 1) {
         console.log("user found called")
         validate.valid = false
-        validate.errors["username"] = "Username alredy exists. Give an unique username"
+        validate.errors["username"] = "Give an unique username"
       } else {
         if (user.username == null || user.username == "") {
           validate.valid = false
-          validate.errors["username"] = "Username field cannot be empty or null"
+          validate.errors["username"] = "Username field cannot be empty"
         }
       }
 
       if (user.email == null || user.email == "") {
         validate.valid = false
-        validate.errors["email"] = "Email field cannot be empty or null"
+        validate.errors["email"] = "Email field cannot be empty"
       }
 
       if (user.password == null || user.password == "") {
         validate.valid = false
-        validate.errors["password"] = "Password field cannot be empty"
+        validate.errors["password"] = "Initialize password"
       }
 
       if (user.password != user.confirmPassword || user.confirmPassword == "" || user.confirmPassword == null) {
         console.log("Check password")
         validate.valid = false
-        validate.errors["confirmPassword"] = "Password mismatched"
+        validate.errors["confirmPassword"] = "Password mismatched. Check again"
       }
 
       return validate

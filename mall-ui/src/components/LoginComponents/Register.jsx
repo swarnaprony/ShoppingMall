@@ -1,5 +1,5 @@
-import React, {Component, useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import React, { Component, useState, useEffect } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Footer from "../Footer";
 import 'bootstrap/dist/css/bootstrap.css';
 import Header from "../Header";
@@ -14,30 +14,85 @@ function Register() {
         "confirmPassword": ""
     })
 
+
     // Creating newUser in Backend
-    const addUsers = async(newUser) => {
+    const addUsers = async (newUser) => {
         await fetch("http://localhost:4000/users", {
-        method: "POST",
-        body: JSON.stringify(newUser),
-        headers: {
-          "Content-Type": "application/json; charset=UTF-8",
-        },
+            method: "POST",
+            body: JSON.stringify(newUser),
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8",
+            },
         })
-        .then(response => {
+            .then(response => {
                 response.json()
-                    .then(result => { handleResponse(result) }) 
+                    .then(result => {
+                        handleResponse(result)
+                        handleErrorMsgs(result)
+                    })
             }
-        )
-        .catch((err) => {
-          console.log(err.message);
-        });
-      };
+            )
+            .catch((err) => {
+                console.log();
+            });
+    };
 
     function handleResponse(response) {
         setErrMsgs(() => {
             console.log(response.errors)
             return response.errors
         })
+    }
+
+    function handleErrorMsgs(response) {
+        if (response.errors.username == "" || response.errors.username == undefined) {
+            var element = document.getElementById("username");
+            element.classList.remove("invalid-feedback");
+            var divElement = document.getElementById("userDiv");
+            divElement.classList.add("was-validated");
+        } else {
+            var element = document.getElementById("username");
+            element.classList.add("is-invalid");
+            var divElement = document.getElementById("userDiv");
+            divElement.classList.remove("was-validated");
+        }
+
+        if (response.errors.email == "" || response.errors.email == undefined) {
+            var element = document.getElementById("email");
+            element.classList.remove("invalid-feedback");
+            var divElement = document.getElementById("emailDiv");
+            divElement.classList.add("was-validated");
+        } else {
+            var element = document.getElementById("email");
+            element.classList.add("is-invalid");
+            var divElement = document.getElementById("emailDiv");
+            divElement.classList.remove("was-validated");
+        }
+
+        if (response.errors.password == "" || response.password == undefined) {
+            var element = document.getElementById("password");
+            element.classList.remove("invalid-feedback");
+            var divElement = document.getElementById("passwordDiv");
+            divElement.classList.add("was-validated");
+        } else {
+            var element = document.getElementById("password");
+            element.classList.add("is-invalid");
+            var divElement = document.getElementById("passwordDiv");
+            divElement.classList.remove("was-validated");
+        }
+
+        if (response.errors.confirmPassword == "" || response.confirmPassword == undefined) {
+            var element = document.getElementById("confirmPassword");
+            element.classList.remove("invalid-feedback");
+            var divElement = document.getElementById("confirmPasswordDiv");
+            divElement.classList.add("was-validated");
+        } else {
+            var element = document.getElementById("confirmPassword");
+            element.classList.add("is-invalid");
+            var divElement = document.getElementById("confirmPasswordDiv");
+            divElement.classList.remove("was-validated");
+        }
+        
     }
 
     const [newUser, setNewUser] = useState({
@@ -57,8 +112,6 @@ function Register() {
     };
 
 
-    
-
     const handleSubmit = (event) => {
         event.preventDefault();
         addUsers(newUser);
@@ -73,25 +126,25 @@ function Register() {
                         <form className="form-example" action="" method="post">
                             <h5>Register Here</h5>
 
-                            <div className="form-group was-validated">
+                            <div id="userDiv" className="form-group was-validated">
                                 <label htmlFor="username">Username</label>
-                                <input type="text" className="form-control username" id="username" placeholder="Username..." name="username" value={newUser.username} onChange={handleChange}  required/>
-                                <div className="invalid-feedback">{errMsgs.username}</div>
+                                <input type="text" className="form-control" id="username" placeholder="Username..." name="username" value={newUser.username} onChange={handleChange} required />
+                                <div id="username" className="invalid-feedback">{errMsgs.username}</div>
                             </div>
 
-                            <div className="form-group was-validated">
+                            <div id="emailDiv" className="form-group was-validated">
                                 <label htmlFor="email">E-mail</label>
-                                <input type="email" className="form-control email" id="email" placeholder="Your email" name="email" value={newUser.email} onChange={handleChange} required/>
-                                <div className="invalid-feedback">{errMsgs.email}</div>
+                                <input type="email" className="form-control email" id="email" placeholder="Your email" name="email" value={newUser.email} onChange={handleChange} required />
+                                <div className="invalid-feedback" >{errMsgs.email}</div>
                             </div>
-                            <div className="form-group was-validated">
+                            <div id="passwordDiv"  className="form-group was-validated">
                                 <label htmlFor="password">Password</label>
-                                <input type="password" className="form-control password" id="password" placeholder="Password..." name="password" value={newUser.password} onChange={handleChange} required/>
+                                <input type="password" className="form-control password" id="password" placeholder="Password..." name="password" value={newUser.password} onChange={handleChange} required />
                                 <div className="invalid-feedback">{errMsgs.password}</div>
                             </div>
-                            <div className="form-group was-validated">
-                                <label htmlFor="password">Password</label>
-                                <input type="password" className="form-control confirmPassword" id="confirmPassword" placeholder="Confirm Password..." name="confirmPassword" value={newUser.confirmPassword} onChange={handleChange} required/>
+                            <div id="confirmPasswordDiv" className="form-group was-validated">
+                                <label htmlFor="password">Confirm Password</label>
+                                <input type="password" className="form-control confirmPassword" id="confirmPassword" placeholder="Confirm Password..." name="confirmPassword" value={newUser.confirmPassword} onChange={handleChange} required />
                                 <div className="invalid-feedback">{errMsgs.confirmPassword}</div>
                             </div>
                             <button type="submit" className="btn btn-primary btn-customized" onClick={handleSubmit}>Submit</button>
