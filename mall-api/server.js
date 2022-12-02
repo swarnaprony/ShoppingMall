@@ -6,6 +6,7 @@ const mysql = require('mysql2');
 const { check, validationResult } = require('express-validator');
 const { PromiseProvider } = require("mongoose");
 const mysqlPromise = require('mysql2/promise');
+var validator = require("email-validator");
 
 
 const app = express();
@@ -111,16 +112,19 @@ function validateUsers(user) {
         console.log("user found called")
         validate.valid = false
         validate.errors["username"] = "Give an unique username"
-      } else {
-        if (user.username == null || user.username == "") {
+      } else if (user.username == null || user.username == "") {
           validate.valid = false
           validate.errors["username"] = "Username field cannot be empty"
-        }
       }
 
       if (user.email == null || user.email == "") {
         validate.valid = false
         validate.errors["email"] = "Email field cannot be empty"
+      }
+      else if (validator.validate(user.email) == false) {
+        console.log("Validate Email")
+        validate.valid = false
+        validate.errors["email"] = "Invalid email address"
       }
 
       if (user.password == null || user.password == "") {

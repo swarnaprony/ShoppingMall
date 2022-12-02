@@ -46,10 +46,10 @@ function Register() {
 
     function handleErrorMsgs(response) {
         if (response.errors.username == "" || response.errors.username == undefined) {
-            var element = document.getElementById("username");
-            element.classList.remove("invalid-feedback");
-            var divElement = document.getElementById("userDiv");
-            divElement.classList.add("was-validated");
+            var userelement = document.getElementById("username");
+            userelement.classList.remove("invalid-feedback");
+            var userdivElement = document.getElementById("userDiv");
+            userdivElement.classList.add("was-validated");
         } else {
             var element = document.getElementById("username");
             element.classList.add("is-invalid");
@@ -80,17 +80,20 @@ function Register() {
             var divElement = document.getElementById("passwordDiv");
             divElement.classList.remove("was-validated");
         }
+        console.log(response.errors.confirmPassword)
 
-        if (response.errors.confirmPassword == "" || response.confirmPassword == undefined) {
-            var element = document.getElementById("confirmPassword");
-            element.classList.remove("invalid-feedback");
-            var divElement = document.getElementById("confirmPasswordDiv");
-            divElement.classList.add("was-validated");
+        if (response.errors.confirmPassword == "" || response.errors.confirmPassword == undefined) {
+            console.log("Check Password error wrong")
+            var conPassElement = document.getElementById("confirmPassword");
+            conPassElement.classList.remove("invalid-feedback");
+            var divConPassElement = document.getElementById("confirmPasswordDiv");
+            divConPassElement.classList.add("was-validated");
         } else {
-            var element = document.getElementById("confirmPassword");
-            element.classList.add("is-invalid");
-            var divElement = document.getElementById("confirmPasswordDiv");
-            divElement.classList.remove("was-validated");
+            console.log("Check Password error")
+            var conPassElement = document.getElementById("confirmPassword");
+            conPassElement.classList.add("is-invalid");
+            var divConPassElement = document.getElementById("confirmPasswordDiv");
+            divConPassElement.classList.remove("was-validated");
         }
         
     }
@@ -135,7 +138,7 @@ function Register() {
                             <div id="emailDiv" className="form-group was-validated">
                                 <label htmlFor="email">E-mail</label>
                                 <input type="email" className="form-control email" id="email" placeholder="Your email" name="email" value={newUser.email} onChange={handleChange} required />
-                                <div className="invalid-feedback" >{errMsgs.email}</div>
+                                <div id="email" className="invalid-feedback" >{errMsgs.email}</div>
                             </div>
                             <div id="passwordDiv"  className="form-group was-validated">
                                 <label htmlFor="password">Password</label>
@@ -144,7 +147,7 @@ function Register() {
                             </div>
                             <div id="confirmPasswordDiv" className="form-group was-validated">
                                 <label htmlFor="password">Confirm Password</label>
-                                <input type="password" className="form-control confirmPassword" id="confirmPassword" placeholder="Confirm Password..." name="confirmPassword" value={newUser.confirmPassword} onChange={handleChange} required />
+                                <input type="password" className="form-control password" id="confirmPassword" placeholder="Confirm Password..." name="confirmPassword" value={newUser.confirmPassword} onChange={handleChange} required />
                                 <div className="invalid-feedback">{errMsgs.confirmPassword}</div>
                             </div>
                             <button type="submit" className="btn btn-primary btn-customized" onClick={handleSubmit}>Submit</button>
