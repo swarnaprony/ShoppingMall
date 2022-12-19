@@ -73,10 +73,14 @@ app.post('/users', function (req, res) {
   console.log(validationResultPromise)
 
   validationResultPromise.then((validationResult) => {
+    console.log("Log Validation result")
+    console.log(validationResult.valid)
       if (validationResult.valid == true) {
+        console.log("Is it a valid Username?")
         saveUser(user);
         res.send(user);
       } else {
+        console.log("False Validation Called")
         console.log(validationResult)
         res.status(400);
         res.send(validationResult);
@@ -104,10 +108,10 @@ function validateUsers(user) {
   }
 
   const findUsername = "SELECT username FROM users WHERE username = '" + user.username + "'";
-  console.log(findUsername)
   return con.promise().query(findUsername)
   .then((rows) => {
-
+    console.log("Found Rows")
+      console.log(rows[0])
       if(rows[0].length >= 1) {
         console.log("user found called")
         validate.valid = false

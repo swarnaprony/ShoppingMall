@@ -27,8 +27,15 @@ function Register() {
             .then(response => {
                 response.json()
                     .then(result => {
-                        handleResponse(result)
-                        handleErrorMsgs(result)
+                        console.log("Check Valid value")
+                        console.log(result)
+                        if (result.valid == undefined) {
+                            handleSuccessfulRegistration(result)
+                        }                           
+                        if (result.valid == false) {
+                            handleErrorMsgs(result)
+                        }
+                           
                     })
             }
             )
@@ -37,14 +44,19 @@ function Register() {
             });
     };
 
-    function handleResponse(response) {
+    function handleSuccessfulRegistration(response) {
+        alert("User Registration Successful")
+        window.location.href = "http://localhost:3000/"
+    }
+
+
+    function handleErrorMsgs(response) {
+
         setErrMsgs(() => {
             console.log(response.errors)
             return response.errors
         })
-    }
-
-    function handleErrorMsgs(response) {
+        
         if (response.errors.username == "" || response.errors.username == undefined) {
             var userelement = document.getElementById("username");
             userelement.classList.remove("invalid-feedback");
@@ -95,7 +107,7 @@ function Register() {
             var divConPassElement = document.getElementById("confirmPasswordDiv");
             divConPassElement.classList.remove("was-validated");
         }
-        
+
     }
 
     const [newUser, setNewUser] = useState({
@@ -122,12 +134,15 @@ function Register() {
 
     return (
         <div>
+
             <div className="container h-100 position-relative">
                 <div className="row h-100 justify-content-center align-items-center">
                     <div className="col-10 col-md-8 col-lg-6">
 
+
                         <form className="form-example" action="" method="post">
                             <h5>Register Here</h5>
+
 
                             <div id="userDiv" className="form-group was-validated">
                                 <label htmlFor="username">Username</label>
@@ -140,7 +155,7 @@ function Register() {
                                 <input type="email" className="form-control email" id="email" placeholder="Your email" name="email" value={newUser.email} onChange={handleChange} required />
                                 <div id="email" className="invalid-feedback" >{errMsgs.email}</div>
                             </div>
-                            <div id="passwordDiv"  className="form-group was-validated">
+                            <div id="passwordDiv" className="form-group was-validated">
                                 <label htmlFor="password">Password</label>
                                 <input type="password" className="form-control password" id="password" placeholder="Password..." name="password" value={newUser.password} onChange={handleChange} required />
                                 <div className="invalid-feedback">{errMsgs.password}</div>
@@ -151,6 +166,7 @@ function Register() {
                                 <div className="invalid-feedback">{errMsgs.confirmPassword}</div>
                             </div>
                             <button type="submit" className="btn btn-primary btn-customized" onClick={handleSubmit}>Submit</button>
+                        
                         </form>
                     </div>x
                 </div>
