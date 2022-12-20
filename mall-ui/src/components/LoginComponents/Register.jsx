@@ -134,6 +134,7 @@ function Register() {
 
     return (
         <div>
+            <Header />
 
             <div className="container h-100 position-relative">
                 <div className="row h-100 justify-content-center align-items-center">
