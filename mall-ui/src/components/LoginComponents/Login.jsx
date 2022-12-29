@@ -1,10 +1,12 @@
-import React from "react";
+import React, { Component, useState, useEffect } from "react";
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
+import 'bootstrap/dist/css/bootstrap.css';
+import Header from "../Header";
+import Home from "../Home";
 import Footer from "../Footer";
 
-function Login(
+function Login(){
 
-) {
 
 
   return (

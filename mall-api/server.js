@@ -32,7 +32,7 @@ const con = mysql.createConnection({
 
 con.connect(function (err) {
   if (err) throw err;
-  console.log("Conected to mysql database");
+  console.log("Conected to mysql database")
 })
 
 app.get('/', function (req, res) {
@@ -41,21 +41,21 @@ app.get('/', function (req, res) {
 
 
 app.get('/login', function (req, res) {
-  console.log("Login called");
+  console.log("Login called")
 })
 
 app.get('/users', function (req, res) {
-  const selectUsers = "SELECT username FROM users";
+  console.log(req.params.username)
+  const selectUsers = "SELECT username FROM users"
   con.promise().query(selectUsers).then(([rows, fields]) => {
-    console.log(rows);
+    console.log(rows)
     res.send(rows)
   })
     .catch(console.log)
 })
 
-app.get('/users/:userName', function (req, res) {
-  const selectUsers = "SELECT username FROM users WHERE username = '" + req.params.userName + "'";
-
+app.get('/users/:userEmail', function (req, res) {
+  const selectUsers = "SELECT email FROM users WHERE email = '" + req.params.userEmail + "'";
   con.promise().query(selectUsers).then(([rows, fields]) => {
     res.send(rows)
   })
