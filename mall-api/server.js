@@ -55,7 +55,7 @@ app.get('/users', function (req, res) {
 })
 
 app.get('/users/:userEmail', function (req, res) {
-  const selectUsers = "SELECT email FROM users WHERE email = '" + req.params.userEmail + "'";
+  const selectUsers = "SELECT email, username, passsword FROM users WHERE email = '" + req.params.userEmail + "'";
   con.promise().query(selectUsers).then(([rows, fields]) => {
     res.send(rows)
   })
@@ -63,6 +63,7 @@ app.get('/users/:userEmail', function (req, res) {
 })
 
 
+// user registration
 
 app.post('/users', function (req, res) {
 
@@ -148,9 +149,8 @@ function validateUsers(user) {
 
 }
 
-
 function saveUser(user) {
-  const insertUser = "INSERT INTO users (username, email, passsword)"
+  const insertUser = "INSERT INTO users (username, email, password)"
     + " VALUES ('" + user.username + "', '" + user.email + "', '" + user.password + "');"
   const selectUsers = "SELECT * FROM users";
   console.log("Error Found")
@@ -159,6 +159,83 @@ function saveUser(user) {
   })
 };
 
+
+// user login
+
+app.post('/userloginfirst', function (req, res) {
+  console.log("UserLogin called");
+  console.log(req.body.email)
+  const selectUsers = "SELECT email, username, password FROM users WHERE email = '" + req.body.email + "'";
+  con.promise().query(selectUsers).then(([rows, fields]) => {
+    res.send(rows)
+  })
+    .catch(console.log)
+
+})
+
+
+app.post('/userlogin', function (req, res) {
+
+  var user = req.body;
+
+  var validationResultPromise = validateUser(user)
+
+  validationResultPromise.then((validationResult) => {
+    console.log(validationResult.valid)
+      if (validationResult.valid == true) {
+        res.send(user);
+      } else {
+        console.log(validationResult)
+        res.status(400);
+        res.send(validationResult);
+      }
+    })
+    console.log("Validation result called")
+})
+
+
+function validateUser(user) {
+
+  const validate = {
+    "valid": true,
+    "errors": {}
+  }
+
+  const findEmail = "SELECT email, password FROM users WHERE email = '" + user.email + "'";
+  return con.promise().query(findEmail)
+  .then((rows) => {
+      userdata = rows[0][0]
+      if(rows[0].length >= 1) {
+        console.log("user found called")
+        validate.valid = true
+      } else {
+        userdata = {}
+        validate.valid = false
+        validate.errors["email"] = "email address not registered yet"
+      }
+      
+      if (user.email == null || user.email == "") {
+        validate.valid = false
+        validate.errors["email"] = "Email field cannot be empty"
+      } else if (validator.validate(user.email) == false) {
+        console.log("Validate Email")
+        validate.valid = false
+        validate.errors["email"] = "Invalid email address check again"
+      }
+
+      if (user.password == null || user.password == "") {
+        validate.valid = false
+        validate.errors["password"] = "Password field cannot be empty"
+      } else if (userdata.password != user["password"]) {
+        validate.valid = false
+        validate.errors["password"] = "Password mismatched"
+      }
+
+      return validate
+
+  })
+
+}
 
 
 app.listen(4000, function () {
